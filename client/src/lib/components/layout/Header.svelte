@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { Users, PawPrint, Stethoscope, Calendar, Home, Menu, X } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
+	import ThemeSelector from './ThemeSelector.svelte';
 
 	let mobileMenuOpen = $state(false);
 
@@ -47,6 +48,9 @@
 						{item.label}
 					</a>
 				{/each}
+				<div class="ml-2 border-l border-border pl-2">
+					<ThemeSelector />
+				</div>
 			</nav>
 
 			<!-- Mobile Menu Button -->
@@ -82,6 +86,9 @@
 							{item.label}
 						</a>
 					{/each}
+					<div class="mt-2 border-t border-border pt-2">
+						<ThemeSelector showLabel />
+					</div>
 				</div>
 			</nav>
 		{/if}

@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * ilionx Paws - ilionx Brand Design System
- * Light mode only - clean, professional veterinary clinic feel
+ * Themes: light (:root), dark (.dark) and Pastel Paws ([data-theme="pastel"]).
+ * Keep the theme logic in lib/theme/theme.svelte.ts and the inline script in app.html in sync.
  * Primary: ilionx Red (#E8003D)
  * Typography: Poppins (body - prefer lighter weights), JetBrains Mono (code)
  * Brand values: Helder (clear), Menselijk (human), Kwalitatief (quality)
@@ -73,6 +76,89 @@
   --sidebar-accent-foreground: hsl(0 0% 25%);
   --sidebar-border: hsl(0 0% 88%);
   --sidebar-ring: hsl(344 100% 45%);
+}
+
+/* Dark theme - lightened brand red for contrast on dark surfaces */
+.dark {
+  color-scheme: dark;
+  --background: hsl(220 15% 9%);
+  --foreground: hsl(0 0% 92%);
+  --card: hsl(220 14% 13%);
+  --card-foreground: hsl(0 0% 92%);
+  --popover: hsl(220 14% 13%);
+  --popover-foreground: hsl(0 0% 92%);
+  --primary: hsl(344 90% 62%);
+  --primary-foreground: hsl(0 0% 10%);
+  --secondary: hsl(220 12% 20%);
+  --secondary-foreground: hsl(0 0% 92%);
+  --muted: hsl(220 12% 18%);
+  --muted-foreground: hsl(220 8% 68%);
+  --accent: hsl(175 60% 30%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 72% 55%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(142 60% 45%);
+  --success-foreground: hsl(0 0% 10%);
+  --warning: hsl(38 92% 55%);
+  --warning-foreground: hsl(0 0% 10%);
+  --border: hsl(220 12% 24%);
+  --input: hsl(220 12% 26%);
+  --ring: hsl(344 90% 62%);
+  --chart-1: hsl(344 90% 62%);
+  --chart-2: hsl(175 60% 50%);
+  --chart-3: hsl(45 90% 60%);
+  --chart-4: hsl(220 70% 65%);
+  --chart-5: hsl(280 60% 65%);
+  --sidebar: hsl(220 14% 11%);
+  --sidebar-foreground: hsl(0 0% 92%);
+  --sidebar-primary: hsl(344 90% 62%);
+  --sidebar-primary-foreground: hsl(0 0% 10%);
+  --sidebar-accent: hsl(220 12% 20%);
+  --sidebar-accent-foreground: hsl(0 0% 92%);
+  --sidebar-border: hsl(220 12% 24%);
+  --sidebar-ring: hsl(344 90% 62%);
+}
+
+/* Pastel Paws - lavender background, mint accent, pink primary */
+[data-theme="pastel"] {
+  color-scheme: light;
+  --radius: 1rem;
+  --background: hsl(260 60% 97%);
+  --foreground: hsl(260 25% 22%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(260 25% 22%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(260 25% 22%);
+  --primary: hsl(330 65% 45%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(260 50% 93%);
+  --secondary-foreground: hsl(260 25% 22%);
+  --muted: hsl(260 45% 94%);
+  --muted-foreground: hsl(260 15% 40%);
+  --accent: hsl(160 55% 85%);
+  --accent-foreground: hsl(160 40% 18%);
+  --destructive: hsl(0 70% 50%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(150 55% 32%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(35 85% 55%);
+  --warning-foreground: hsl(0 0% 15%);
+  --border: hsl(260 40% 88%);
+  --input: hsl(260 40% 86%);
+  --ring: hsl(330 65% 45%);
+  --chart-1: hsl(330 65% 60%);
+  --chart-2: hsl(160 50% 55%);
+  --chart-3: hsl(45 90% 65%);
+  --chart-4: hsl(210 70% 70%);
+  --chart-5: hsl(270 55% 70%);
+  --sidebar: hsl(260 55% 95%);
+  --sidebar-foreground: hsl(260 25% 22%);
+  --sidebar-primary: hsl(330 65% 45%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(160 55% 88%);
+  --sidebar-accent-foreground: hsl(160 40% 18%);
+  --sidebar-border: hsl(260 40% 88%);
+  --sidebar-ring: hsl(330 65% 45%);
 }
 
 /* Tailwind Theme Integration */
