@@ -52,7 +52,10 @@ class PetGlobalControllerTest extends IntegrationTest {
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].id", is(equalTo(pet.getId()))))
             .andExpect(jsonPath("$[0].name", is(equalTo(PET_NAME))))
-            .andExpect(jsonPath("$[0].ownerId", is(equalTo(owner.getId()))));
+            .andExpect(jsonPath("$[0].ownerId", is(equalTo(owner.getId()))))
+            .andExpect(jsonPath("$[0].owner.id", is(equalTo(owner.getId()))))
+            .andExpect(jsonPath("$[0].owner.firstName", is(equalTo(owner.getFirstName()))))
+            .andExpect(jsonPath("$[0].owner.lastName", is(equalTo(owner.getLastName()))));
     }
 
     @Test
@@ -123,6 +126,8 @@ class PetGlobalControllerTest extends IntegrationTest {
             .andExpect(jsonPath("$.id", is(notNullValue())))
             .andExpect(jsonPath("$.name", is(equalTo(PET_NAME))))
             .andExpect(jsonPath("$.ownerId", is(equalTo(owner.getId()))))
+            .andExpect(jsonPath("$.owner.id", is(equalTo(owner.getId()))))
+            .andExpect(jsonPath("$.owner.lastName", is(equalTo(owner.getLastName()))))
             .andReturn()
             .getResponse()
             .getContentAsString();
@@ -213,6 +218,22 @@ class PetGlobalControllerTest extends IntegrationTest {
         // And: The pet should no longer exist
         mockMvc.perform(get(PET_BY_ID, pet.getId()))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should delete pet visits when pet is deleted")
+    void shouldDeletePetVisitsWhenPetIsDeleted() throws Exception {
+        // Given: A pet with a visit
+        final Owner owner = aSavedOwner();
+        final Pet pet = aSavedPet(owner);
+        aSavedVisit(pet);
+
+        // When: Deleting the pet
+        mockMvc.perform(delete(PET_BY_ID, pet.getId()))
+            .andExpect(status().isNoContent());
+
+        // Then: The visit should be gone too
+        assertThat(visitRepository.count(), is(equalTo(0L)));
     }
 
     @Test

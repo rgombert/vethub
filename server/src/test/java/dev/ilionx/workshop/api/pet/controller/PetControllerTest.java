@@ -105,6 +105,9 @@ class PetControllerTest extends IntegrationTest {
             .andExpect(jsonPath("$.type.id", is(equalTo(1))))
             .andExpect(jsonPath("$.type.name", is(equalTo("Cat"))))
             .andExpect(jsonPath("$.ownerId", is(equalTo(savedOwner.getId()))))
+            .andExpect(jsonPath("$.owner.id", is(equalTo(savedOwner.getId()))))
+            .andExpect(jsonPath("$.owner.firstName", is(equalTo(savedOwner.getFirstName()))))
+            .andExpect(jsonPath("$.owner.lastName", is(equalTo(savedOwner.getLastName()))))
             .andExpect(jsonPath("$.visits", is(empty())));
     }
 

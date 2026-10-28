@@ -17,6 +17,7 @@ export type UpdateOwnerRequest = components['schemas']['UpdateOwnerRequest'];
 // Pet Types
 // =============================================================================
 export type PetResponse = components['schemas']['PetResponse'];
+export type OwnerSummaryResponse = components['schemas']['OwnerSummaryResponse'];
 export type PetSummaryResponse = components['schemas']['PetSummaryResponse'];
 export type CreatePetRequest = components['schemas']['CreatePetRequest'];
 export type UpdatePetRequest = components['schemas']['UpdatePetRequest'];
@@ -54,7 +55,7 @@ export type UpdateVisitRequest = components['schemas']['UpdateVisitRequest'];
 // Error Types
 // =============================================================================
 export type ErrorResponse = components['schemas']['ErrorResponseResource'];
-export type ValidationErrorResponse = components['schemas']['ValidationErrorResponseResource'];
+export type ValidationErrorResponse = components['schemas']['MethodArgumentNotValidResponseResource'];
 export type ValidationError = components['schemas']['ValidationErrorResource'];
 export type ApiErrorResponse = components['schemas']['ApiErrorResponseResource'];
 export type RateLimitErrorResponse = components['schemas']['RateLimitErrorResponseResource'];

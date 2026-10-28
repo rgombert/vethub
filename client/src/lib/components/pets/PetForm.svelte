@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import type { components } from '$lib/types/api';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -15,6 +16,9 @@
 		petTypes: PetType[];
 		onSubmit: (data: { name: string; birthDate: string; typeId: number }) => Promise<void>;
 		submitLabel?: string;
+		beforeFields?: Snippet;
+		canSubmit?: boolean;
+		onCancel?: () => void;
 	}
 
 	let {
@@ -23,7 +27,10 @@
 		typeId: initialTypeId,
 		petTypes,
 		onSubmit,
-		submitLabel = 'Save'
+		submitLabel = 'Save',
+		beforeFields,
+		canSubmit = true,
+		onCancel = () => history.back()
 	}: Props = $props();
 
 	let name = $state(initialName);
@@ -36,7 +43,7 @@
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
-		if (!selectedTypeId) {
+		if (!selectedTypeId || !canSubmit) {
 			return;
 		}
 		submitting = true;
@@ -53,6 +60,8 @@
 </script>
 
 <form onsubmit={handleSubmit} class="space-y-6">
+	{@render beforeFields?.()}
+
 	<div class="space-y-2">
 		<Label for="name">Pet Name</Label>
 		<Input
@@ -96,10 +105,10 @@
 	</div>
 
 	<div class="flex justify-end gap-3">
-		<Button type="button" variant="outline" onclick={() => history.back()} disabled={submitting}>
+		<Button type="button" variant="outline" onclick={onCancel} disabled={submitting}>
 			Cancel
 		</Button>
-		<Button type="submit" disabled={submitting || !selectedTypeId}>
+		<Button type="submit" disabled={submitting || !selectedTypeId || !canSubmit}>
 			{#if submitting}
 				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 			{/if}

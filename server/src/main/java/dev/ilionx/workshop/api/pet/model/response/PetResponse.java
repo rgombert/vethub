@@ -50,6 +50,12 @@ public class PetResponse {
     )
     private Integer ownerId;
 
+    @Schema(
+        description = "The pet's owner",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private OwnerSummaryResponse owner;
+
     @Schema(description = "The pet's visits")
     private List<VisitSummaryResponse> visits;
 }

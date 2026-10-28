@@ -1,7 +1,9 @@
 package dev.ilionx.workshop.api.pet.model.mapper;
 
+import dev.ilionx.workshop.api.owner.model.Owner;
 import dev.ilionx.workshop.api.pet.model.Pet;
 import dev.ilionx.workshop.api.pet.model.PetType;
+import dev.ilionx.workshop.api.pet.model.response.OwnerSummaryResponse;
 import dev.ilionx.workshop.api.pet.model.response.PetResponse;
 import dev.ilionx.workshop.api.pet.model.response.PetTypeResponse;
 import dev.ilionx.workshop.api.pet.model.response.VisitSummaryResponse;
@@ -28,6 +30,8 @@ public abstract class PetMapper {
     public abstract List<PetResponse> toResponseList(List<Pet> pets);
 
     public abstract PetTypeResponse toPetTypeResponse(PetType petType);
+
+    public abstract OwnerSummaryResponse toOwnerSummaryResponse(Owner owner);
 
     public abstract VisitSummaryResponse toVisitSummaryResponse(Visit visit);
 }
