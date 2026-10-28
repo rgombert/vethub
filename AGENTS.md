@@ -51,6 +51,14 @@ vethub/
 
 Pet types are served by their own controller and service inside the `pet` package. Specialties are in the `vet` package.
 
+## Domain Model
+
+- Owner has many Pets (one-to-many)
+- Pet has many Visits (one-to-many)
+- Pet has one PetType (many-to-one)
+- Vet has many Specialties (many-to-many)
+- Visit currently has no link to Vet (this is a known gap)
+
 ## How the layers connect
 
 ```
@@ -167,6 +175,17 @@ Conventions: functions are named `get<X>s`, `get<X>ById`, `create<X>`, `update<X
 
 **6. Other:** configuration comes from `VITE_SERVER_BASE_URL`, `VITE_API_USERNAME` and `VITE_API_PASSWORD`. A response middleware in `client.ts` logs non-2xx responses. Types are compile-time only, with no runtime response validation. If the spec is stale, TypeScript passes but the app can break, so re-run `sync:api` whenever the backend contract changes. Verify with `bun run check`.
 
+## Frontend-Backend Integration
+
+The frontend uses openapi-fetch with auto-generated TypeScript types (see [Frontend: openapi-fetch with generated types](#frontend-openapi-fetch-with-generated-types)). After changing backend endpoints or DTOs:
+
+1. From `client/`, run `bun run sync:api`. It starts the backend, downloads the spec to `server/openapi.json` and regenerates the types.
+2. The generated types appear in `client/src/lib/types/api.d.ts`. Never edit them by hand.
+3. Add or update the friendly type names in `client/src/lib/api/models.ts` and the module in `client/src/lib/api/<feature>/`.
+4. Run `bun run check` to verify the types.
+
+To do it manually, start the backend with `cd server && ./gradlew bootRun`, then run `bun run download:api` followed by `bun run generate:api` in `client/`. The package manager is Bun, not npm.
+
 ## Testing (backend only; the frontend has no tests)
 
 Tests live in `server/src/test/java/...`, mirroring the main packages. Name them `<Class>Test`. Use `@DisplayName("Unit Test - <X>")` or `@DisplayName("Integration Test - <X>")` on the class, a `@DisplayName` on every test, `// Given: / When: / Then:` comments, Hamcrest assertions, and `should<Result>When<Condition>` method names.
@@ -217,6 +236,24 @@ bun run sync:api             # regenerate API types (see above)
   5. Update `models.ts`, the API module and the pages.
 - **Add a new feature:** copy the `owner` package. Add routes to `Paths.java`, error codes to `ApiErrorCode`, a changeset, test factories and tests, and a frontend API module with its `models.ts` exports and routes.
 
+## Adding a new feature (backend)
+
+Put the code in `api/<feature>/{controller,service,repository,model}` and use `owner` as the reference implementation.
+
+1. Liquibase changeset in `db/changelog/changesets/` (`<yyyyMMddHHmm>-PRD-<description>.xml`), plus an optional `TST` seed changeset.
+2. Entity class with JPA annotations (`@Entity`, `@Table(name = "<plural_snake_case>")`).
+3. Request DTOs (`Create<X>Request`, `Update<X>Request`) and response DTO (`<X>Response`), with `@Schema` on every field.
+4. MapStruct mapper: an abstract class `<X>Mapper` annotated `@Mapper(config = SharedMapperConfig.class)`, not an interface.
+5. Repository: an interface extending `JpaRepository<Entity, Integer>`.
+6. Route constants in `api/Paths.java`.
+7. `<ENTITY>_NOT_FOUND` constant in `ApiErrorCode` with the next sequential code.
+8. Service with business logic and `@Transactional`, throwing `DataNotFoundException` for missing resources.
+9. Validator `model/validator/<X>Validator` (optional, called from the controller on writes).
+10. Controller with REST endpoints, `@Tag`/`@Operation` annotations and explicit `@ResponseStatus`, using the `Paths` constants.
+11. Test factories: `aValid<X>()` in `UnitTest`, `aSaved<X>()` and request factories in `IntegrationTest`, and extend `cleanDatabase()` in foreign-key order.
+12. Tests: unit tests for the service (and validator), integration test for the controller.
+13. Run `bun run sync:api` in `client/` if the frontend needs the new endpoints.
+
 ## Security and CORS
 
 - HTTP Basic is configured (demo user `user` / `password`), but `WebSecurityConfig` has `anyRequest().permitAll()` and CSRF disabled, so authentication is not enforced.
@@ -229,3 +266,4 @@ This is a workshop project, so some gaps are deliberate. Don't assume they are b
 - `PetController` has no validator, unlike `OwnerController`. Missing fields in pet requests fall through to database constraints, and future birth dates are accepted.
 - Generated frontend types can drift if `sync:api` isn't re-run, and nothing validates API responses at runtime.
 - Data lives in an in-memory H2 database and is reset on every restart.
+- `Visit` has no link to `Vet`, so a visit cannot record which vet handled it.
